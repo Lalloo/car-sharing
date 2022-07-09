@@ -1,0 +1,4 @@
+/target
+/src/carsharing/db/
+/src/main/java/db/
+.idea
