@@ -1,6 +1,7 @@
 package dao.impl;
 
-import dao.CompanyDao;
+import dao.CarDao;
+import domain.Car;
 import domain.Company;
 import util.DataBaseUtil;
 
@@ -9,20 +10,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CompanyDaoImpl implements CompanyDao {
-
-    private final String initTable = "CREATE TABLE IF NOT EXISTS COMPANY (" +
+public class CarDaoImpl implements CarDao {
+    private final String initTable = "CREATE TABLE IF NOT EXISTS CAR (" +
             "ID INTEGER PRIMARY KEY AUTO_INCREMENT, " +
-            "NAME VARCHAR(255) UNIQUE NOT NULL" +
+            "NAME VARCHAR(255) UNIQUE NOT NULL," +
+            "COMPANY_ID INTEGER NOT NULL," +
+            "FOREIGN KEY (COMPANY_ID) REFERENCES COMPANY (ID)" +
             ");";
 
-    private final String addCompany = "INSERT INTO COMPANY (NAME) VALUES (?);";
+    private final String addCar = "INSERT INTO CAR (NAME) VALUES (?);";
 
-    private final String selectAll = "SELECT * FROM COMPANY;";
+    private final String selectAll = "SELECT * FROM CAR;";
 
-    private final String deleteAll = "DROP TABLE COMPANY;";
+    private final String deleteAll = "DROP TABLE CAR;";
 
-    public CompanyDaoImpl() {
+    public CarDaoImpl() {
         createTable();
     }
 
@@ -36,11 +38,12 @@ public class CompanyDaoImpl implements CompanyDao {
         }
     }
 
+
     @Override
-    public void save(Company company) {
+    public void save(Car car) {
         try (Connection connection = DataBaseUtil.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(addCompany)) {
-            preparedStatement.setString(1, company.getName());
+             PreparedStatement preparedStatement = connection.prepareStatement(addCar)) {
+            preparedStatement.setString(1, car.getName());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,11 +67,11 @@ public class CompanyDaoImpl implements CompanyDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 System.out.println("id: " + resultSet.getString("ID"));
-                System.out.println("company name: " + resultSet.getString("NAME"));
+                System.out.println("car name: " + resultSet.getString("NAME"));
+                System.out.println("company_id: " + resultSet.getString("COMPANY_ID"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 }

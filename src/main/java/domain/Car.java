@@ -1,14 +1,13 @@
 package domain;
 
-public class Company {
+public class Car {
     private Integer id = 0;
     private final String name;
 
-    public Company(String name) {
+    public Car(String name) {
         id++;
         this.name = name;
     }
-
 
     public Integer getId() {
         return id;
@@ -17,4 +16,5 @@ public class Company {
     public String getName() {
         return name;
     }
+
 }
