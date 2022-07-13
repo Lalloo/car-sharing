@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompanyDaoImpl implements CompanyDao {
 
@@ -19,8 +21,6 @@ public class CompanyDaoImpl implements CompanyDao {
     private final String addCompany = "INSERT INTO COMPANY (NAME) VALUES (?);";
 
     private final String selectAll = "SELECT * FROM COMPANY;";
-
-    private final String deleteAll = "DROP TABLE COMPANY;";
 
     public CompanyDaoImpl() {
         createTable();
@@ -48,27 +48,23 @@ public class CompanyDaoImpl implements CompanyDao {
     }
 
     @Override
-    public void deleteAll() {
-        try (Connection connection = DataBaseUtil.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(deleteAll)) {
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void printAll() {
-        try (Connection connection = DataBaseUtil.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement(selectAll);
-            ResultSet resultSet = preparedStatement.executeQuery();
+    public List<Company> getAll() {
+        List<Company> companies = new ArrayList<>();
+        try (
+                Connection connection = DataBaseUtil.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(selectAll);
+                ResultSet resultSet = preparedStatement.executeQuery()
+        ) {
             while (resultSet.next()) {
-                System.out.println("id: " + resultSet.getString("ID"));
-                System.out.println("company name: " + resultSet.getString("NAME"));
+                companies.add(new Company(
+                        resultSet.getInt("ID"),
+                        resultSet.getString("NAME")
+                ));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return companies;
     }
 
 }

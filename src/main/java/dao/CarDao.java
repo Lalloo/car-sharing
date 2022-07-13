@@ -1,11 +1,15 @@
 package dao;
 
 import domain.Car;
+import domain.Company;
+import domain.Customer;
+
+import java.util.List;
 
 public interface CarDao {
     void save (Car car);
 
-    void deleteAll();
+    List<Car> getAllByCompany(Company company);
 
-    void printAll();
+    Car get(Customer customer);
 }
