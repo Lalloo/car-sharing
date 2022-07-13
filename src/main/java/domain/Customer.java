@@ -1,17 +1,16 @@
 package domain;
 
+import java.util.Optional;
+
 public class Customer {
-    private final String name;
     private Integer id;
+    private final String name;
     private Car car;
-    private Integer rentCarId;
 
-
-    public Customer(String name, Integer id, Car car, Integer rentCarId) {
+    public Customer(Integer id, String name, Car car) {
         this.id = id;
         this.name = name;
         this.car = car;
-        this.rentCarId = rentCarId;
     }
 
     public Customer(String name) {
@@ -26,12 +25,8 @@ public class Customer {
         return id;
     }
 
-    public Car getCar() {
-        return car;
-    }
-
-    public Integer getRentCarId() {
-        return rentCarId;
+    public Optional<Car> getCar() {
+        return Optional.ofNullable(car);
     }
 
     public void setCar(Car car) {

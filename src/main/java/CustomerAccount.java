@@ -5,7 +5,10 @@ import domain.Car;
 import domain.Company;
 import domain.Customer;
 
-import java.util.*;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomerAccount {
@@ -52,10 +55,8 @@ public class CustomerAccount {
     }
 
     private void customerRentCar(Customer customer) {
-        Optional<Car> car = Optional.ofNullable(customer.getCar());
-        if (car.isPresent()) {
-            throw new IllegalStateException("\nYou've already rented a car!\n");
-        }
+        customer.getCar()
+                .orElseThrow(() -> new IllegalStateException("\nYou've already rented a car!\n"));
         customerChooseCompany(customer);
     }
 
@@ -86,7 +87,6 @@ public class CustomerAccount {
         System.out.println("\nChoose a car:");
         AtomicInteger i = new AtomicInteger(1);
         Set<Integer> rentedCarIds = customerDao.getRentedCarIds();
-
         cars.stream()
                 .filter(c -> !rentedCarIds.contains(c.getId()))
                 .forEach(car -> System.out.println(i.getAndIncrement() + ". " + car.getName()));
@@ -100,35 +100,26 @@ public class CustomerAccount {
                 throw new IllegalArgumentException("Not found company with id:" + userInput);
             }
         } catch (InputMismatchException e) {
+            // todo переделать
             System.out.println("\nPlease enter number 0-" + cars.size() + "!\n");
         }
-
         customer.setCar(cars.get(userInput - 1));
         customerDao.update(customer);
-        System.out.println("\nYou rented " + "'" + cars.get(userInput - 1).getName() + "'");
+        System.out.println("\nYou rented " + "'" + customer.getCar().get().getName() + "'");
     }
 
     private void customerReturnRentedCar(Customer customer) {
-        Optional<Car> car = Optional.ofNullable(customer.getCar());
-        if (car.isEmpty()) {
-            throw new IllegalStateException("\nYou didn't rent a car!");
-        }
-        customerDao.delete(customer);
+        customer.getCar()
+                .orElseThrow(() -> new IllegalStateException("\nYou didn't rent a car!"));
         customer.setCar(null);
+        customerDao.delete(customer);
         System.out.println("\nYou've returned a rented car");
     }
 
     private void customerRentedCar(Customer customer) {
-        Optional<Car> car = Optional.ofNullable(customer.getCar());
-        if (car.isEmpty()) {
-            throw new IllegalStateException("\nYou didn't rent a car!");
-        }
-        System.out.println("\nYour rented car:\n" + car.get().getName());
-        List<Company> companies = companyDao.getAll();
-        Optional<Company> company = companies.stream()
-                .filter(c -> c.getId().equals(car.get().getCompanyId()))
-                .findFirst();
-        company.ifPresent(value -> car.get().setCompany(value));
-        System.out.println("Company:\n" + car.get().getCompany().getName());
+        Car car = customer.getCar()
+                .orElseThrow(() -> new IllegalStateException("\nYou didn't rent a car!"));
+        System.out.println("\nYour rented car:\n" + car.getName());
+        System.out.println("Company:\n" + car.getCompany().getName());
     }
 }

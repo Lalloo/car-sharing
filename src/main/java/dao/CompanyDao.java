@@ -5,8 +5,7 @@ import domain.Company;
 import java.util.List;
 
 public interface CompanyDao {
-    void save (Company company);
-
+    void save(Company company);
 
     List<Company> getAll();
 }

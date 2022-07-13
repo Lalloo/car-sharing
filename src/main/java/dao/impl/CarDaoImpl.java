@@ -1,10 +1,8 @@
 package dao.impl;
 
 import dao.CarDao;
-import dao.CompanyDao;
 import domain.Car;
 import domain.Company;
-import domain.Customer;
 import util.DataBaseUtil;
 
 import java.sql.Connection;
@@ -25,9 +23,6 @@ public class CarDaoImpl implements CarDao {
     private final String addCar = "INSERT INTO CAR (NAME, COMPANY_ID) VALUES (?, ?);";
 
     private final String selectAll = "SELECT * FROM CAR WHERE COMPANY_ID = (?);";
-
-    private final String getCarName = "SELECT NAME, COMPANY_ID FROM CAR WHERE ID = (?);";
-
 
     public CarDaoImpl() {
         createTable();
@@ -78,25 +73,5 @@ public class CarDaoImpl implements CarDao {
             e.printStackTrace();
         }
         return cars;
-    }
-
-    @Override
-    public Car get(Customer customer) {
-        Car car = null;
-        try (Connection connection = DataBaseUtil.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(getCarName)) {
-            preparedStatement.setInt(1, customer.getRentCarId());
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    car = new Car(
-                            resultSet.getString("NAME"),
-                            resultSet.getInt("COMPANY_ID")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return car;
     }
 }

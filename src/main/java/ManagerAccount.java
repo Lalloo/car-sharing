@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ManagerAccount {
-
     private static final Scanner SCANNER = new Scanner(System.in);
 
     private final CompanyDao companyDao;
