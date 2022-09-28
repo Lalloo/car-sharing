@@ -4,26 +4,23 @@ import dao.CustomerDao;
 import dao.impl.CarDaoImpl;
 import dao.impl.CompanyDaoImpl;
 import dao.impl.CustomerDaoImpl;
-import domain.Car;
-import domain.Company;
 import domain.Customer;
 
-import java.util.*;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CarSharingApp {
     private static final Scanner SCANNER = new Scanner(System.in);
-
-    private final CompanyDao companyDao;
-    private final CarDao carDao;
     private final CustomerDao customerDao;
 
     private final ManagerAccount manager;
     private final CustomerAccount customer;
 
     public CarSharingApp(String[] args) {
-        companyDao = new CompanyDaoImpl();
-        carDao = new CarDaoImpl();
+        CompanyDao companyDao = new CompanyDaoImpl();
+        CarDao carDao = new CarDaoImpl();
         customerDao = new CustomerDaoImpl();
         manager = new ManagerAccount(companyDao, carDao);
         customer = new CustomerAccount(companyDao, carDao, customerDao);
@@ -70,11 +67,6 @@ public class CarSharingApp {
 
     private void customerList() {
         List<Customer> customers = customerDao.getAll();
-//        customers.forEach(c -> {
-//            if (c.getRentCarId() != 0) {
-//                c.setCar(carDao.get(c));
-//            }
-//        });
         if (customers.isEmpty())
             throw new IllegalStateException("\nThe customer list is empty!");
         System.out.println("\nCustomer list:");

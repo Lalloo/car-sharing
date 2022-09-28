@@ -8,7 +8,7 @@ public final class DataBaseUtil {
     private DataBaseUtil() {
     }
 
-    private static String DB_URL = "jdbc:h2:./src/carsharing/db/carsharing";
+    private static String DB_URL = "jdbc:h2:D:./src/carsharing/db/carsharing";
     private static String USER = "sa";
     private static String PASSWORD = "sa";
 
